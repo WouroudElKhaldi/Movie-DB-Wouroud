@@ -37,3 +37,32 @@ app.get(`/search` , (request , response) => {
         response.status(500).json({status: 500 , error: true, message: `you have to provide a search`})
     }
 }) ;
+
+// movie create route 
+app.post('/movie/create', (request, response) => {
+    response.json({ status: 200, message: 'create route'});
+});
+
+// movie read route 
+app.get('/movie/read', (request, response) => {
+    // response.setHeader('Content-Type', 'application/json; charset=utf-8');
+    response.json({ status: 200, message: 'read route', data: movies});
+});
+
+// movie update route 
+app.put('/movie/update', (request, response) => {
+    response.json({ status: 200, message: 'update route'});
+});
+
+// movie delete route 
+app.delete('/movie/delete', (request, response) => {
+    response.json({ status: 200, message: 'delete route'});
+});
+
+// array of movies
+const movies = [
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8 },
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: `اﻹرهاب و الكباب‎`, year: 1992, rating: 6.2 }
+]

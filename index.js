@@ -39,23 +39,23 @@ app.get(`/search` , (request , response) => {
 }) ;
 
 // movie create route 
-app.post('/movie/create', (request, response) => {
+app.post('/movies/create', (request, response) => {
     response.json({ status: 200, message: 'create route'});
 });
 
 // movie read route 
-app.get('/movie/read', (request, response) => {
+app.get('/movies/read', (request, response) => {
     // response.setHeader('Content-Type', 'application/json; charset=utf-8');
     response.json({ status: 200, message: 'read route', data: movies});
 });
 
 // movie update route 
-app.put('/movie/update', (request, response) => {
+app.put('/movies/update', (request, response) => {
     response.json({ status: 200, message: 'update route'});
 });
 
 // movie delete route 
-app.delete('/movie/delete', (request, response) => {
+app.delete('/movies/delete', (request, response) => {
     response.json({ status: 200, message: 'delete route'});
 });
 

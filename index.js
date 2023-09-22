@@ -39,7 +39,7 @@ app.get(`/search` , (request , response) => {
 }) ;
 
 // movie create route 
-app.post('/movies/create', (request, response) => {
+app.get('/movies/create', (request, response) => {
     response.json({ status: 200, message: 'create route'});
 });
 
@@ -49,13 +49,31 @@ app.get('/movies/read', (request, response) => {
     response.json({ status: 200, message: 'read route', data: movies});
 });
 
+// sort by date
+app.get('/movies/read/by-date', (request, response) => {
+    const moviesByDate = [...movies].sort((old, neww) => neww.year - old.year);
+    response.json({ status: 200, data: moviesByDate });
+});
+
+// sort by rating
+app.get('/movies/read/by-rating', (request, response) => {
+    const moviesByDate = [...movies].sort((low, high) => high.rating - low.rating);
+    response.json({ status: 200, data: moviesByDate });
+});
+
+// sort by title
+app.get('/movies/read/by-title', (request, response) => {
+    const moviesByDate = [...movies].sort((first, last) => first.title.localeCompare(last.title));
+    response.json({ status: 200, data: moviesByDate });
+});
+
 // movie update route 
-app.put('/movies/update', (request, response) => {
+app.get('/movies/update', (request, response) => {
     response.json({ status: 200, message: 'update route'});
 });
 
 // movie delete route 
-app.delete('/movies/delete', (request, response) => {
+app.get('/movies/delete', (request, response) => {
     response.json({ status: 200, message: 'delete route'});
 });
 

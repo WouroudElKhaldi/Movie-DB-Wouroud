@@ -70,9 +70,10 @@ app.get('/movies/read/by-title', (request, response) => {
 // read one
 app.get('/movies/read/id/:ID', (request, response) => {
     const {ID} = request.params ;
-    const existMovie = movies.find( (movie) => movie.ID === parseInt(ID) );
-    if (existMovie) {
-        response.json({status: 200 , data : existMovie })
+    const movieIndex = parseInt(ID) - 1;
+    if (movieIndex >= 0 && movieIndex < movies.length) {
+        const movie = movies.find( (movie ,index) => index === movieIndex );
+        response.json({status: 200 , data : movie });
     } else {
         response.status(404).json({status: 404 , error: true , message: `The movie ${ID} does not exist`})
     }
@@ -90,8 +91,8 @@ app.get('/movies/delete', (request, response) => {
 
 // array of movies
 const movies = [
-    { title: 'Jaws', year: 1975, rating: 8 , ID: 1},
-    { title: 'Avatar', year: 2009, rating: 7.8, ID: 2},
-    { title: 'Brazil', year: 1985, rating: 8 , ID:3 },
-    { title: `اﻹرهاب و الكباب‎`, year: 1992, rating: 6.2 , ID:4 }
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8},
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: `اﻹرهاب و الكباب‎`, year: 1992, rating: 6.2 }
 ]

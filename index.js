@@ -27,11 +27,17 @@ app.get('/time', (request, response) => {
 }) ;
 
 // hello route 
-app.get('/hello/:ID', (request, response) => {
+app.get('/hello/:ID?', (request, response) => {
     const {ID} = request.params ;
+    if (ID){
     response.json({
         status: 200 , 
-        message: `Hello ${ID}!` })
+        message: `Hello ${ID}!` })        
+    } else {
+        response.json({
+            status: 200 , 
+            message: `Hello!` })          
+    }
 }) ;
 
 // search route 

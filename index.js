@@ -99,8 +99,19 @@ app.get('/movies/update', (request, response) => {
 });
 
 // movie delete route 
-app.get('/movies/delete', (request, response) => {
-    response.json({ status: 200, message: 'delete route'});
+app.delete('/movies/delete/:ID', (request, response) => {
+    const {ID} = request.params ;
+    const movieIndex = parseInt(ID) - 1;
+    if (movieIndex >=0 && movieIndex < movies.length) {
+        const delet = movies.splice(movieIndex, 1);
+        response.json({ status: 200 ,
+                        message : `The movie with the id ${ID} is deleted.`,
+                        data: movies})
+    } else {
+        response.status(404).json({ status:404,
+                                    error : true,
+                                    message:`The movie with the id ${ID} does not exist`})
+    }
 });
 
 // array of movies

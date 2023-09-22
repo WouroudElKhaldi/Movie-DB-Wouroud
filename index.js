@@ -1,5 +1,5 @@
 const express = require('express') ;
-const port = 3000 ;
+const port = 3001 ;
 const app = express() ;
 
 // simple server 
@@ -12,29 +12,41 @@ check the local host: http://localhost:${port}`))
 
 // test route
 app.get('/test' , (request, response) => {
-    response.json({status: 200 , message : "OK"})
+    response.json({
+        status: 200 , 
+        message : "OK"})
 }) ;
 
 // time routr
 app.get('/time', (request, response) => {
     const date = new Date() ;
     const time = `${date.getHours()}:${date.getMinutes()}`
-    response.json({status : 200, message: time})
+    response.json({
+        status : 200, 
+        message: time})
 }) ;
 
 // hello route 
 app.get('/hello/:ID', (request, response) => {
     const {ID} = request.params ;
-    response.json({status: 200 , message: `Hello ${ID}!` })
+    response.json({
+        status: 200 , 
+        message: `Hello ${ID}!` })
 }) ;
 
 // search route 
 app.get(`/search` , (request , response) => {
     const {s} = request.query ;
     if (s) {
-        response.json({status: 200 , message: "ok" , data: s }) ;
+        response.json({
+            status: 200 , 
+            message: "ok" , 
+            data: s }) ;
     } else {
-        response.status(500).json({status: 500 , error: true, message: `you have to provide a search`})
+        response.status(500).json({
+            status: 500 , 
+            error: true, 
+            message: `you have to provide a search`})
     }
 }) ;
 
@@ -49,9 +61,12 @@ app.post('/movies/add', (request, response) => {
             rating: ratingValue
         } ;
         movies.push(newMovie) ;
-        response.json({message: 200 , data: movies});
+        response.json({
+            message: 200 , 
+            data: movies});
     } else {
-        response.status(403).json({status: 403 , 
+        response.status(403).json({
+            status: 403 , 
             error : true , 
             message: `You can't create a movie without providing a title and a year` })
     }
@@ -60,13 +75,18 @@ app.post('/movies/add', (request, response) => {
 // movie read route 
 app.get('/movies/read', (request, response) => {
     // response.setHeader('Content-Type', 'application/json; charset=utf-8');
-    response.json({ status: 200, message: 'read route', data: movies});
+    response.json({ 
+        status: 200, 
+        message: 'read route', 
+        data: movies});
 });
 
 // sort by date
 app.get('/movies/read/by-date', (request, response) => {
     const moviesByDate = [...movies].sort((old, neww) => neww.year - old.year);
-    response.json({ status: 200, data: moviesByDate });
+    response.json({ 
+        status: 200, 
+        data: moviesByDate });
 });
 
 // sort by rating
@@ -87,15 +107,44 @@ app.get('/movies/read/id/:ID', (request, response) => {
     const movieIndex = parseInt(ID) - 1;
     if (movieIndex >= 0 && movieIndex < movies.length) {
         const movie = movies.find( (movie ,index) => index === movieIndex );
-        response.json({status: 200 , data : movie });
+        response.json({
+            status: 200 , 
+            data : movie });
     } else {
-        response.status(404).json({status: 404 , error: true , message: `The movie ${ID} does not exist`})
+        response.status(404).json({
+            status: 404 , 
+            error: true , 
+            message: `The movie ${ID} does not exist`})
     }
 })
 
 // movie update route 
-app.get('/movies/update', (request, response) => {
-    response.json({ status: 200, message: 'update route'});
+app.put('/movies/update/:ID', (request, response) => {
+    const {ID} = request.params ;
+    const movieIndex = parseInt(ID) - 1 ;
+    const {title, year ,rating } = request.query ;
+    if(movieIndex >= 0 && movieIndex < movies.length){
+            if (title !== undefined) {
+                movies[movieIndex].title = title ;                
+            } 
+            if (year !== undefined){
+                movies[movieIndex].year = parseInt(year)
+            }
+            if (rating !== undefined){
+                movies[movieIndex].rating = parseFloat(rating) ;
+            }
+        response.json({
+            status: 200,
+            message: `The movie with ID= ${ID} is updated`,
+            data: movies
+        })  
+    } else {
+        response.status(404).json({ 
+            status: 404 , 
+            error : true ,
+            message: `The movie with id= ${ID} does not exist` 
+        });
+    }
 });
 
 // movie delete route 
@@ -119,5 +168,5 @@ const movies = [
     { title: 'Jaws', year: 1975, rating: 8 },
     { title: 'Avatar', year: 2009, rating: 7.8},
     { title: 'Brazil', year: 1985, rating: 8 },
-    { title: `اﻹرهاب و الكباب‎`, year: 1992, rating: 6.2 }
+    { title: `اﻹرهاب و الكباب`, year: 1992, rating: 6.2 }
 ]

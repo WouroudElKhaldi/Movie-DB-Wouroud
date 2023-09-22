@@ -39,8 +39,22 @@ app.get(`/search` , (request , response) => {
 }) ;
 
 // movie create route 
-app.get('/movies/create', (request, response) => {
-    response.json({ status: 200, message: 'create route'});
+app.post('/movies/add', (request, response) => {
+    const {title , year , rating} = request.query ;
+    const ratingValue = rating ? parseFloat(rating) : 4 ;
+    if (title && year && year.length === 4 && !isNaN(year)) {
+        const newMovie = {
+            title , 
+            year: parseInt(year) ,
+            rating: ratingValue
+        } ;
+        movies.push(newMovie) ;
+        response.json({message: 200 , data: movies});
+    } else {
+        response.status(403).json({status: 403 , 
+            error : true , 
+            message: `You can't create a movie without providing a title and a year` })
+    }
 });
 
 // movie read route 

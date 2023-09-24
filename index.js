@@ -17,6 +17,22 @@ mongoose.connect(URI , {
         console.error(error);
     })
 const app = express() ;
+// middleware for authentication
+const userAuthent = (request, response, next) => {
+    const { username, password } = request.headers;
+    const userAuth = users.find(
+      (user) => user.username === username && user.password === password
+    );
+
+    if (userAuth) {
+      next();
+    } else {
+      response.status(401).json({ 
+            status: 401, 
+            error: true, 
+            message: 'Unauthorized , wrong username or password' });
+    }
+  }
 app.use(express.json());
 
 // mongoose schema 
@@ -90,7 +106,7 @@ app.get(`/search` , (request , response) => {
 }) ;
 
 // movie create route 
-app.post('/movies/add', async (request, response) => {
+app.post('/movies/add', userAuthent , async (request, response) => {
     try { 
         const {title , year , rating} = request.query ;
         const ratingValue = rating ? parseFloat(rating) : 4 ;
@@ -224,7 +240,7 @@ app.get('/movies/read/id/:ID', async (request, response) => {
 });
 
 // movie update route 
-app.put('/movies/update/:ID', async (request, response) => {
+app.put('/movies/update/:ID', userAuthent , async (request, response) => {
         const {ID} = request.params ;
         const {title, year ,rating } = request.query ;    
         const movieToUpdate = await Movie.findById(ID);
@@ -265,7 +281,7 @@ app.put('/movies/update/:ID', async (request, response) => {
 });
 
 // movie delete route 
-app.delete('/movies/delete/:ID', async (request, response) => {
+app.delete('/movies/delete/:ID', userAuthent , async (request, response) => {
     try {
         const {ID} = request.params ;
         const movieTodelete = await Movie.findByIdAndRemove(ID);
@@ -297,3 +313,126 @@ app.delete('/movies/delete/:ID', async (request, response) => {
 const movies = []
 
 // step 11 was done by default from step 5
+
+// users part 
+// movie read route 
+app.get('/users/read', (request, response) => {
+    response.json({ 
+        status: 200, 
+        message: 'read route', 
+        data: users
+    });
+});
+
+// user create route
+app.post('/users/add', userAuthent ,(request, response) => {
+    const {username , password} = request.query ;
+    if ( !username || !password) {
+        response.status(403).json({
+            status: 403 , 
+            error : true , 
+            message: `You can't add a user without providing a username and a password` 
+})
+    } else {
+        const newUser = {
+            username ,
+            password
+        } ;
+        users.push(newUser) ;
+        response.json({
+            message: 200 , 
+            data: users});
+    }
+});
+
+// sort by username
+app.get('/users/read/by-name', (request, response) => {
+    const usersByName = [...users].sort((first, last) => first.username.localeCompare(last.username));
+    response.json({ 
+        status: 200, 
+        data: usersByName });
+});
+
+
+// sort by password
+app.get('/users/read/by-password', (request, response) => {
+    const usersByPassword = [...users].sort((first, last) => first.password.localeCompare(last.password));
+    response.json({ 
+        status: 200, 
+        data: usersByPassword 
+    });
+});
+
+
+// read one
+app.get('/users/read/name/:name', (request, response) => {
+    const {name} = request.params ;
+    const user = users.find( (user) => user.username === name );
+    if (!user) {
+        response.status(404).json({
+            status: 404 , 
+            error: true , 
+            message: `The user with username : ${name} does not exist`
+})
+    } else {
+        response.json({
+            status: 200 , 
+            data : user });
+    }
+})
+
+
+app.put('/users/update/:name', userAuthent , (request, response) => {
+    const {name} = request.params ;
+    const {username , password} = request.query ;
+    const userIndex = users.findIndex((user) => user.username === name);
+    if(userIndex === -1 ){
+        response.status(404).json({ 
+            status: 404 , 
+            error : true ,
+            message: `The user with username = ${name} does not exist` 
+        });
+    } else {
+            if (username !== undefined) {
+                users[userIndex].username = username ;                
+            } 
+            if (password !== undefined){
+                users[userIndex].password = password
+            }
+        response.json({
+            status: 200,
+            message: `The user with username = ${name} is updated`,
+            data: users
+        })  
+    }
+});
+
+
+// user delete route 
+app.delete('/users/delete/:name', userAuthent , (request, response) => {
+    const {name} = request.params ;
+    const userIndex = users.findIndex((user) => user.username === name);
+    if (userIndex === -1) {
+        response.status(404).json({ 
+            status:404,
+            error : true,
+            message:`The user with the username ${name} does not exist`
+})
+    } else {
+        const deletedUser = users.splice(userIndex, 1);
+        response.json({ 
+            status: 200 ,
+            message : `The user with the username ${name} is deleted.`,
+            data: users
+})
+    }
+});
+
+
+// array of users
+const users = [
+    { username: 'John', password: 'blabla1' },
+    { username: 'Adam',  password: 'blabla2' },
+    { username: 'Jane',  password: 'blabla3' },
+    { username: `Wouroud`, password: 'blabla4'  }
+]

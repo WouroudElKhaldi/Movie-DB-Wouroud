@@ -27,8 +27,8 @@ const userAuthent = (request, response, next) => {
     if (userAuth) {
       next();
     } else {
-      response.status(401).json({ 
-            status: 401, 
+      response.status(403).json({ 
+            status: 403, 
             error: true, 
             message: 'Unauthorized , wrong username or password' });
     }

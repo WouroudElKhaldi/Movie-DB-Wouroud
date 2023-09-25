@@ -340,7 +340,8 @@ app.post('/users/add' ,(request, response) => {
         } ;
         users.push(newUser) ;
         response.json({
-            message: 200 , 
+            status: 200 , 
+            message : `user ${username} added successfuly` ,
             data: users});
     }
 });

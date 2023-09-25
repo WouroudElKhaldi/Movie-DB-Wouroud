@@ -325,7 +325,7 @@ app.get('/users/read', (request, response) => {
 });
 
 // user create route
-app.post('/users/add', userAuthent ,(request, response) => {
+app.post('/users/add' ,(request, response) => {
     const {username , password} = request.query ;
     if ( !username || !password) {
         response.status(403).json({
@@ -382,7 +382,7 @@ app.get('/users/read/name/:name', (request, response) => {
 })
 
 
-app.put('/users/update/:name', userAuthent , (request, response) => {
+app.put('/users/update/:name', (request, response) => {
     const {name} = request.params ;
     const {username , password} = request.query ;
     const userIndex = users.findIndex((user) => user.username === name);
@@ -409,7 +409,7 @@ app.put('/users/update/:name', userAuthent , (request, response) => {
 
 
 // user delete route 
-app.delete('/users/delete/:name', userAuthent , (request, response) => {
+app.delete('/users/delete/:name' , (request, response) => {
     const {name} = request.params ;
     const userIndex = users.findIndex((user) => user.username === name);
     if (userIndex === -1) {
